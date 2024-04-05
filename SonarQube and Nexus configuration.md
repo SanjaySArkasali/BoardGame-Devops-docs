@@ -57,18 +57,19 @@ For SonarQube analysis first set up the server in Jenkins
 - configure the SonarQube in Jenkins by going into system -> SonarQube server, give name, SonarQube server Ip address with port and without the last /, choose the credential we just added and save
 		
 ```yaml
-		    environment {
-        SCANNER_HOME = tool 'sonar-scanner' //as configured in the Jenkins tools 
-			}
+environment {
+    SCANNER_HOME = tool 'sonar-scanner' //as configured in the Jenkins tools 
+}
 ```
+
 ```yaml		
-		stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('sonar') { //simple writing 'sonar' because we just configured it in system
-                sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=BoardGame -Dsonar.projectKey=BoardGame \
-                    -Dsonar.java.binaries=. '''    
-            }
-        }
+stage('SonarQube Analysis') {
+    steps {
+	withSonarQubeEnv('sonar') { //simple writing 'sonar' because we just configured it in system
+	sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=BoardGame -Dsonar.projectKey=BoardGame \
+	    -Dsonar.java.binaries=. '''    
+    }
+}
 ```
 ## SonarQube Quaity Gate, webhooks
 
@@ -80,28 +81,28 @@ Generate a webhook
 				
 - in pipeline use this script
 ```yaml	
-		stage('Quality Gate') { // code quality check by setting webhook in SonarQube
-            steps {
-                script  {
-                    waitForQualityGate abortPipeline: false, credentialsID: '<credential ID>' //sonar token
-                }
-            }
-        }
+stage('Quality Gate') { // code quality check by setting webhook in SonarQube
+    steps {
+	script  {
+	    waitForQualityGate abortPipeline: false, credentialsID: '<credential ID>' //sonar token
+	}
+    }
+}
 ```
 ## Publishing artifacts to nexus 
 
 for publishing the artifacts to nexus we need to edit the pom.xml file in github with the below section
 ```xml
-	<distributionManagement>
-		<repository>
-			<id>maven-releases</id>
-			<url>http://54.167.177.28:8081/repository/maven-releases/</url> // get the url from nexus - browse - maven releases
-		</repository>
-		<snapshotRepository>
-			<id>maven-snapshots</id>
-			<url>http://54.167.177.28:8081/repository/maven-snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
+<distributionManagement>
+	<repository>
+		<id>maven-releases</id>
+		<url>http://54.167.177.28:8081/repository/maven-releases/</url> // get the url from nexus - browse - maven releases
+	</repository>
+	<snapshotRepository>
+		<id>maven-snapshots</id>
+		<url>http://54.167.177.28:8081/repository/maven-snapshots/</url>
+	</snapshotRepository>
+</distributionManagement>
 ```
 			
 	-> setting up credentials to access the nexus repo 
