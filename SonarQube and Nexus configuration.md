@@ -57,18 +57,18 @@ For SonarQube analysis first set up the server in Jenkins
 - configure the SonarQube in Jenkins by going into system -> SonarQube server, give name, SonarQube server Ip address with port and without the last /, choose the credential we just added and save
 		
 ```
-environment {
-SCANNER_HOME = tool 'sonar-scanner' //as configured in the Jenkins tools 
-	}
+	environment {
+        SCANNER_HOME = tool 'sonar-scanner' //as configured in the Jenkins tools 
+		}
 ```
 ```		
-stage('SonarQube Analysis') {
-    steps {
-	withSonarQubeEnv('sonar') { //simple writing 'sonar' because we just configured it in system
-	sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=BoardGame -Dsonar.projectKey=BoardGame \
-	    -Dsonar.java.binaries=. '''    
-    }
-}
+	stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sonar') { //simple writing 'sonar' because we just configured it in system
+                sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=BoardGame -Dsonar.projectKey=BoardGame \
+                    -Dsonar.java.binaries=. '''    
+            }
+        }
 ```
 ## SonarQube Quaity Gate, webhooks
 
@@ -79,14 +79,14 @@ Generate a webhook
 ```<http://jenkins-public-ip:8080>/sonarqube-webhook/``` then save
 				
 - in pipeline use this script
-```	
-stage('Quality Gate') { // code quality check by setting webhook in SonarQube
-    steps {
-	script  {
-	    waitForQualityGate abortPipeline: false, credentialsID: '<credential ID>' //sonar token
-	}
-    }
-}
+```
+	stage('Quality Gate') { // code quality check by setting webhook in SonarQube
+            steps {
+                script  {
+                    waitForQualityGate abortPipeline: false, credentialsID: '<credential ID>' //sonar token
+                }
+            }
+        }
 ```
 ## Publishing artifacts to nexus 
 
@@ -104,35 +104,40 @@ for publishing the artifacts to nexus we need to edit the pom.xml file in github
 	</distributionManagement>
 ```
 			
-	-> setting up credentials to access the nexus repo 
-		manage jenkins - managed files // we get this option cause we installed a plugin 'Config File Provider'
-		
-		-> inside contents we are going to edit some information
-			under servers we are gonna add both maven-releses and maven-snapshots like this
-				-->
-				<server>
-				  <id>maven-releases</id>
-				  <username>admin</username>	//password and username used for nexus
-				  <password>sanjay</password>
-				</server>
+setting up credentials to access the nexus repo 
+- manage jenkins - managed files // we get this option cause we installed a plugin 'Config File Provider'
 
-				 <server>
-				  <id>maven-snapshots</id>
-				  <username>admin</username>
-				  <password>sanjay</password>
-				</server>
-				-->
-			and save
-		
-	-> in pipeline script
-		-> pipeline syntac withMaven: Provide Maven Enviroment
+- inside contents we are going to edit some information
+  under servers we are gonna add both maven-releses and maven-snapshots like this
+```
+-->
+<server>
+  <id>maven-releases</id>
+  <username>admin</username>	//password and username used for nexus
+  <password>sanjay</password>
+</server>
 
-			stage('Publish to nexus') {
-				steps {
-					withMaven(globalMavenSettingsConfig: 'global-settings', jdk: 'jdk17', maven: 'maven3', mavenSettingsConfig: '', traceability: true) {
-						sh "mvn deploy"
-					}
-				}
-			}
+ <server>
+  <id>maven-snapshots</id>
+  <username>admin</username>
+  <password>sanjay</password>
+</server>
+-->
+```
+and save
+		
+in pipeline script
+- pipeline syntac withMaven: Provide Maven Enviroment
+
+```
+stage('Publish to nexus') {
+	steps {
+		withMaven(globalMavenSettingsConfig: 'global-settings', jdk: 'jdk17', maven: 'maven3', mavenSettingsConfig: '', traceability: true) {
+			sh "mvn deploy"
+		}
+	}
+}
+```
+
 			
 
