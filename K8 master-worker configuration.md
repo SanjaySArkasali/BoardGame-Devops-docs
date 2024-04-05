@@ -187,3 +187,43 @@ like this:
             }
         }
 ```
+this is a example template for deployment-service.yaml
+```yaml
+apiVersion: apps/v1
+kind: Deployment # Kubernetes resource kind we are creating
+metadata:
+  name: <app-name>-deployment
+spec:
+  selector:
+    matchLabels:
+      app: <app-name>
+  replicas: 2 # Number of replicas that will be created for this deployment
+  template:
+    metadata:
+      labels:
+        app: <app-name>
+    spec:
+      containers:
+        - name: <app-name>
+          image: adijaiswal/<app-name>:latest # Image that will be used to containers in the cluster
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080 # The port that the container is running on in the cluster
+
+
+---
+
+apiVersion: v1 # Kubernetes API version
+kind: Service # Kubernetes resource kind we are creating
+metadata: # Metadata of the resource kind we are creating
+  name: <app-name>-ssvc
+spec:
+  selector:
+    app: <app-name>
+  ports:
+    - protocol: "TCP"
+      port: 8080 # The port that the service is running on in the cluster
+      targetPort: 8080 # The port exposed by the service
+  type: LoadBalancer # type of the service.
+```
+
