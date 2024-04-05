@@ -56,13 +56,12 @@ For SonarQube analysis first set up the server in Jenkins
 - then in Jenkins credentials, choose secret text as option, give id.
 - configure the SonarQube in Jenkins by going into system -> SonarQube server, give name, SonarQube server Ip address with port and without the last /, choose the credential we just added and save
 		
-```yaml
-environment {
-    SCANNER_HOME = tool 'sonar-scanner' //as configured in the Jenkins tools 
-}
 ```
-
-```yaml		
+environment {
+SCANNER_HOME = tool 'sonar-scanner' //as configured in the Jenkins tools 
+	}
+```
+```		
 stage('SonarQube Analysis') {
     steps {
 	withSonarQubeEnv('sonar') { //simple writing 'sonar' because we just configured it in system
@@ -80,7 +79,7 @@ Generate a webhook
 ```<http://jenkins-public-ip:8080>/sonarqube-webhook/``` then save
 				
 - in pipeline use this script
-```yaml	
+```	
 stage('Quality Gate') { // code quality check by setting webhook in SonarQube
     steps {
 	script  {
@@ -93,16 +92,16 @@ stage('Quality Gate') { // code quality check by setting webhook in SonarQube
 
 for publishing the artifacts to nexus we need to edit the pom.xml file in github with the below section
 ```xml
-<distributionManagement>
-	<repository>
-		<id>maven-releases</id>
-		<url>http://54.167.177.28:8081/repository/maven-releases/</url> // get the url from nexus - browse - maven releases
-	</repository>
-	<snapshotRepository>
-		<id>maven-snapshots</id>
-		<url>http://54.167.177.28:8081/repository/maven-snapshots/</url>
-	</snapshotRepository>
-</distributionManagement>
+	<distributionManagement>
+		<repository>
+			<id>maven-releases</id>
+			<url>http://54.167.177.28:8081/repository/maven-releases/</url> // get the url from nexus - browse - maven releases
+		</repository>
+		<snapshotRepository>
+			<id>maven-snapshots</id>
+			<url>http://54.167.177.28:8081/repository/maven-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 ```
 			
 	-> setting up credentials to access the nexus repo 
