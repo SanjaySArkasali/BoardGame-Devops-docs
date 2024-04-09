@@ -66,7 +66,7 @@ resource "aws_security_group" "main_security_group" {
   description = "Security group for ec2 instances"
   vpc_id = aws_vpc.my_vpc.id     # reference the related VPC id 
 
-  tags{
+  tags = {
     Name = "main_security_group"
   }
 
