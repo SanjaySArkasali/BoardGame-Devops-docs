@@ -100,6 +100,7 @@ resource "aws_instance" "web_server" {
 
   vpc_security_group_ids = [aws_security_group.main_security_group.id]
   subnet_id = aws_subnet.main_subnet.id  # Associate with the public subnet
+  associate_public_ip_address = true  # Allocate a public IP address to the instance
 
   # Add tags (optional)
   tags = {
