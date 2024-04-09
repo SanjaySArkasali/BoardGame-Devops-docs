@@ -101,6 +101,7 @@ resource "aws_instance" "web_server" {
   vpc_security_group_ids = [aws_security_group.main_security_group.id]
   subnet_id = aws_subnet.main_subnet.id  # Associate with the public subnet
   associate_public_ip_address = true  # Allocate a public IP address to the instance
+  # key_name = aws_key_pair.test-terraform.key_name  # ti add jkey from referencing it, key must be generated locally and the public key must be referenced check the block below
 
   # Optional but good security measure
   metadata_options {
@@ -112,6 +113,14 @@ resource "aws_instance" "web_server" {
   tags = {
     Name = "Web Server Instance"
   }
+}
+```
+
+Pub key referencing 
+```tf
+resource "aws_key_pair" "test-terraform" {
+  key_name   = "test-terraform"
+  public_key = file("~/Documents/key-pairs/test-terraform.pub")
 }
 ```
  
