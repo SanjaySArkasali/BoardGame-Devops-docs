@@ -102,13 +102,18 @@ resource "aws_instance" "web_server" {
   subnet_id = aws_subnet.main_subnet.id  # Associate with the public subnet
   associate_public_ip_address = true  # Allocate a public IP address to the instance
 
+  # Optional but good security measure
+  metadata_options {
+    http_tokens     = "required"  # Require the use of IMDSv2
+    http_put_response_hop_limit = 1  # Ensure only one hop for HTTP PUT requests
+  }
+
   # Add tags (optional)
   tags = {
     Name = "Web Server Instance"
   }
 }
 ```
-
  
 
 
