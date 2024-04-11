@@ -45,6 +45,9 @@ ansible all -m apt -a update_cache=true --become --ask-become-pass
   - ```absent```	- Ensures that the package is not installed on the target hosts.
   - ```latest```	- Ensures that the package is installed and, if a newer version is 	available, Ansible will update the package to the latest version.
   - ```purged```	- Ensures that the package is purged from the system, removing its configuration files as well.
+- ```update_cache```	- update the repository cache```yes/ no```.
+- ```pkg```		- to install list of packages.
+- 
 
 
 ## Reference 
